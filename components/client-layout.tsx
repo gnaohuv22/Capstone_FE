@@ -12,6 +12,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const isPublicPage = pathname === "/" || // Splash screen
                       pathname === "/login" || // Login page
                       pathname === "/register" || // Register page
+                      pathname === "/forgot-password" || // Forgot password page
                       pathname?.startsWith("/auth") || // Other auth pages
                       pathname?.includes("/(marketing)"); // Marketing pages
 

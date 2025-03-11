@@ -6,19 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Phone, KeyRound, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { GraduationCap, User, KeyRound, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    phoneNumber: '',
+    username: '',
     password: ''
   });
   const [errors, setErrors] = useState({
-    phoneNumber: '',
+    username: '',
     password: ''
   });
   const { toast } = useToast();
@@ -30,16 +32,16 @@ export default function LoginPage() {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
-      phoneNumber: '',
+      username: '',
       password: ''
     };
 
-    // Validate phone number
-    if (!formData.phoneNumber) {
-      newErrors.phoneNumber = 'Vui lòng nhập số điện thoại';
+    // Validate username
+    if (!formData.username) {
+      newErrors.username = 'Vui lòng nhập tên đăng nhập';
       isValid = false;
-    } else if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = 'Số điện thoại không hợp lệ';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Tên đăng nhập phải có ít nhất 3 ký tự';
       isValid = false;
     }
 
@@ -58,15 +60,9 @@ export default function LoginPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    let processedValue = value;
-
-    if (name === 'phoneNumber') {
-      processedValue = value.replace(/[^0-9]/g, '');
-    }
-
     setFormData(prev => ({
       ...prev,
-      [name]: processedValue
+      [name]: value
     }));
 
     // Clear error when user types
@@ -102,12 +98,12 @@ export default function LoginPage() {
       });
       
       // Redirect sau khi đăng nhập thành công
-      // router.push('/dashboard');
+      router.push('/dashboard');
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Đăng nhập thất bại",
-        description: "Số điện thoại hoặc mật khẩu không chính xác",
+        description: "Tên đăng nhập hoặc mật khẩu không chính xác",
       });
     } finally {
       setIsLoading(false);
@@ -129,23 +125,22 @@ export default function LoginPage() {
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Số điện thoại</Label>
+              <Label htmlFor="username">Tên đăng nhập</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  type="tel"
-                  placeholder="Nhập số điện thoại"
-                  className={cn("pl-9", errors.phoneNumber && "border-red-500")}
-                  value={formData.phoneNumber}
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Nhập tên đăng nhập"
+                  className={cn("pl-9", errors.username && "border-red-500")}
+                  value={formData.username}
                   onChange={handleInputChange}
-                  maxLength={10}
                   disabled={isLoading}
                 />
               </div>
-              {errors.phoneNumber && (
-                <p className="text-sm text-red-500">{errors.phoneNumber}</p>
+              {errors.username && (
+                <p className="text-sm text-red-500">{errors.username}</p>
               )}
             </div>
             <div className="space-y-2">
